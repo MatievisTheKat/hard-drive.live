@@ -35,7 +35,7 @@ export default class CreateDirPopup extends React.Component<Props, State> {
 				modal
 				position="top center">
 				{(closePopup: any) => (
-					<div className="rounded shadow bg-gray-300 p-2">
+					<div className="rounded shadow bg-gray-300 p-2 text-center">
 						<label htmlFor="new-dir-name">Folder Name:</label>
 						<input
 							value={this.state.newDirName}

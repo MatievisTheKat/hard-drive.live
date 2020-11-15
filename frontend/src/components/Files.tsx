@@ -1,15 +1,14 @@
 import { faFolder, faFile } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React from "react";
-import { FileInfo, Types } from "../types";
+import File, { Types } from "../../../src/File";
 
 import DeleteButton from "./DeleteButton";
-import LastModified from "./LastModified";
-import Size from "./Size";
+import DisplayFileInfo from "./DisplayFileInfo";
 
 interface State {}
 interface Props {
-	files: FileInfo[];
+	files: File[];
 	cwd: string;
 	updatePath(path?: string): Promise<void>;
 	remove(path: string): void;
@@ -23,7 +22,7 @@ export default class Files extends React.Component<Props, State> {
 					.filter((f) => f.type === Types.Directory)
 					.sort()
 					.map((f, i) => (
-						<div key={i} className="flex-row text-black border border-gray-700 my-4 p-1 rounded shadow">
+						<div key={i} className="flex-row text-black border border-gray-700 my-4 p-2 rounded shadow">
 							<span
 								className="hover-mouse-pointer hover:text-blue-700"
 								onClick={async (e) => {
@@ -34,8 +33,7 @@ export default class Files extends React.Component<Props, State> {
 								{f.name}
 							</span>
 							<DeleteButton remove={this.props.remove} cwd={this.props.cwd} file={f} />
-							<LastModified timestamp={f.lastModifiedMs} />
-							<Size bytes={f.size.b} />
+							<DisplayFileInfo file={f} />
 						</div>
 					))}
 
@@ -43,7 +41,7 @@ export default class Files extends React.Component<Props, State> {
 					.filter((f) => f.type === Types.File)
 					.sort()
 					.map((f, i) => (
-						<div key={i} className="flex-row text-black border border-gray-700 my-4 p-1 rounded shadow">
+						<div key={i} className="flex-row text-black border border-gray-700 my-4 p-2 rounded shadow">
 							<a
 								key={i}
 								className="hover-mouse-pointer hover:text-blue-700"
@@ -54,8 +52,7 @@ export default class Files extends React.Component<Props, State> {
 							</a>
 
 							<DeleteButton remove={this.props.remove} cwd={this.props.cwd} file={f} />
-							<LastModified timestamp={f.lastModifiedMs} />
-							<Size bytes={f.size.b} />
+							<DisplayFileInfo file={f} />
 						</div>
 					))}
 			</div>

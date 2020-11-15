@@ -40,7 +40,7 @@ export default class UploadPopup extends React.Component<Props, State> {
 				position="top center">
 				{(closePopup: any) => (
 					<div className="rounded shadow bg-gray-300 p-2 text-center pt-4">
-						<label className="mt-3 hover-mouse-pointer shadow appearance-none border rounded w-full max-w-xs py-2 px-3 text-gray-700 mb-2 leading-tight focus:outline-none focus:shadow-outline">
+						<label className="mt-3 hover-mouse-pointer bg-gray-500 shadow appearance-none border rounded w-full max-w-xs py-2 px-3 leading-tight focus:outline-none focus:shadow-outline">
 							{this.state.files ? `${this.state.files.length} Selected` : "Select Files"}
 							<input
 								type="file"
@@ -53,7 +53,7 @@ export default class UploadPopup extends React.Component<Props, State> {
 							/>
 						</label>
 
-						<div className="mt-4 mx-auto text-center">
+						<div className="mt-5 mx-auto text-center">
 							<button
 								className={`bg-green-400 mx-2 rounded p-1 ${
 									!this.state.files ? "opacity-50 cursor-not-allowed" : "hover:bg-green-500 hover:shadow"

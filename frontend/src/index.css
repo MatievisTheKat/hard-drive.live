@@ -1,3 +1,15 @@
 .hover-mouse-pointer:hover {
 	cursor: pointer;
 }
+
+.hover-mouse-help:hover {
+	cursor: help;
+}
+
+.bottom-full {
+	bottom: 100%;
+}
+
+.top-full {
+	top: 100%;
+}
