@@ -1,14 +1,14 @@
 import { faFolder, faFile } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React from "react";
-import File, { Types } from "../../../src/File";
+import { Types, FileInfo } from "../types";
 
 import DeleteButton from "./DeleteButton";
 import DisplayFileInfo from "./DisplayFileInfo";
 
 interface State {}
 interface Props {
-	files: File[];
+	files: FileInfo[];
 	cwd: string;
 	updatePath(path?: string): Promise<void>;
 	remove(path: string): void;

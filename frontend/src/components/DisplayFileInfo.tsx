@@ -1,7 +1,7 @@
 import moment from "moment";
 import React from "react";
 import Popup from "reactjs-popup";
-import File from "../../../src/File";
+import { FileInfo } from "../types";
 
 import Tooltip from "./Tooltip";
 
@@ -12,7 +12,7 @@ interface State {
 	};
 }
 interface Props {
-	file: File;
+	file: FileInfo;
 }
 
 export default class DisplayFileInfo extends React.Component<Props, State> {
