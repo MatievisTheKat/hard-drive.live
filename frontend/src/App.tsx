@@ -4,8 +4,7 @@ import React from "react";
 import { FileInfo } from "./types";
 import Files from "./components/Files";
 import Header from "./components/Header";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faTimesCircle } from "@fortawesome/free-regular-svg-icons";
+import Error from "./components/Error";
 
 interface State {
 	error?: any;
@@ -13,6 +12,10 @@ interface State {
 	cwd: string;
 }
 interface Props {}
+
+const domain = window.location.hostname;
+const correctDomain = domain === "hard-drive.live";
+const platform = window.navigator.platform;
 
 export default class App extends React.Component<Props, State> {
 	constructor(props: Props | Readonly<Props>) {
@@ -23,6 +26,8 @@ export default class App extends React.Component<Props, State> {
 			files: [],
 			cwd: "",
 		};
+
+		console.log(platform);
 	}
 
 	private async updatePath(path: string = this.state.cwd) {
@@ -35,7 +40,7 @@ export default class App extends React.Component<Props, State> {
 			})
 			.catch((err) => {
 				this.setState({
-					error: err?.response?.data?.error || err,
+					error: err?.response?.data?.error || err.toString(),
 				});
 			});
 	}
@@ -74,7 +79,7 @@ export default class App extends React.Component<Props, State> {
 			})
 			.catch((err) => {
 				this.setState({
-					error: err?.response?.data?.error || err,
+					error: err?.response?.data?.error || err.toString(),
 				});
 			});
 	}
@@ -88,7 +93,7 @@ export default class App extends React.Component<Props, State> {
 			})
 			.catch((err) => {
 				this.setState({
-					error: err?.response?.data?.error || err,
+					error: err?.response?.data?.error || err.toString(),
 				});
 			});
 	}
@@ -106,14 +111,42 @@ export default class App extends React.Component<Props, State> {
 				})
 				.catch((err) => {
 					this.setState({
-						error: err?.response?.data?.error || err,
+						error: err?.response?.data?.error || err.toString(),
 					});
 				});
 		}
 	}
 
+	private removeError() {
+		this.setState({
+			error: undefined,
+		});
+	}
+
 	public async componentDidMount() {
-		await this.updatePath();
+		if (correctDomain) await this.updatePath();
+		else
+			this.setState({
+				error: (
+					<span>
+						Incorrect domain. In order for this to work properly you will need to update your 'hosts' file.
+						<br />
+						You can either{" "}
+						<a href={`/UpdateHosts_${platform}.exe`} className="hover:underline text-blue-700">
+							download a script
+						</a>{" "}
+						to update it or do it manually by:
+						<div className="mt-1" />
+						<br />
+						- Opening Notepad as Administrator
+						<br />- Selecting '<code>File</code>' then '<code>Open</code>'
+						<br />- Navigating to '<code>C:\Windows\System32\drivers\etc\</code>' and selecting the '
+						<code>hosts</code>' file
+						<br />- With the file open, add '<code>192.168.1.113 hard-drive.live</code>' below the other content
+						<br />- Save the file and refresh the page
+					</span>
+				),
+			});
 	}
 
 	public render() {
@@ -127,21 +160,7 @@ export default class App extends React.Component<Props, State> {
 					cwd={this.state.cwd}
 				/>
 
-				{this.state.error ? (
-					<div className="bg-red-400 mx-auto container p-2 rounded border-red-900 shadow">
-						{this.state.error.toString()}
-						<span
-							className="float-right mr-2 hover-mouse-pointer"
-							onClick={(e) => {
-								e.preventDefault();
-								this.setState({
-									error: undefined,
-								});
-							}}>
-							<FontAwesomeIcon icon={faTimesCircle} />
-						</span>
-					</div>
-				) : null}
+				{this.state.error ? <Error remove={this.removeError.bind(this)}>{this.state.error}</Error> : null}
 
 				<Files
 					remove={this.remove.bind(this)}
