@@ -15,7 +15,6 @@ interface Props {}
 
 const domain = window.location.hostname;
 const correctDomain = domain === "hard-drive.live";
-const platform = window.navigator.platform;
 
 export default class App extends React.Component<Props, State> {
 	constructor(props: Props | Readonly<Props>) {
@@ -26,8 +25,6 @@ export default class App extends React.Component<Props, State> {
 			files: [],
 			cwd: "",
 		};
-
-		console.log(platform);
 	}
 
 	private async updatePath(path: string = this.state.cwd) {
@@ -130,19 +127,37 @@ export default class App extends React.Component<Props, State> {
 				error: (
 					<span>
 						Incorrect domain. In order for this to work properly you will need to update your 'hosts' file.
-						<br />
-						You can either{" "}
-						<a href={`/UpdateHosts_${platform}.exe`} className="hover:underline text-blue-700">
-							download a script
-						</a>{" "}
-						to update it or do it manually by:
 						<div className="mt-1" />
 						<br />
-						- Opening Notepad as Administrator
-						<br />- Selecting '<code>File</code>' then '<code>Open</code>'
-						<br />- Navigating to '<code>C:\Windows\System32\drivers\etc\</code>' and selecting the '
-						<code>hosts</code>' file
-						<br />- With the file open, add '<code>192.168.1.113 hard-drive.live</code>' below the other content
+						{window.navigator.platform === "Win32" ? (
+							<>
+								- Open Notepad as Administrator
+								<br />- Select '<code>File</code>' then '<code>Open</code>'
+								<br />- Navigate to '<code>C:\Windows\System32\drivers\etc\</code>' and select the '
+								<code>hosts</code>' file
+							</>
+						) : window.navigator.platform.toLowerCase().includes("linux") ? (
+							<>
+								- Open '<code>/etc/hosts</code>' in sudo mode
+							</>
+						) : window.navigator.platform.toLowerCase().includes("mac") ? (
+							<>
+								- Open '<code>/private/etc/hosts</code>' in sudo mode
+							</>
+						) : (
+							<>
+								- Open{" "}
+								<a
+									className="hover:underline text-blue-600"
+									href="https://www.google.com/search?q=where+is+my+hosts+file&oq=where+is+my+hosts+file&aqs=chrome..69i57j0l5.4430j0j9&sourceid=chrome&ie=UTF-8"
+									target="_blank"
+									rel="noreferrer">
+									your operating system's '<code>hosts</code>'
+								</a>{" "}
+								file
+							</>
+						)}
+						<br />- With the file open, add '<code>192.168.1.113 hard-drive.live</code>' below the any content
 						<br />- Save the file and refresh the page
 					</span>
 				),
