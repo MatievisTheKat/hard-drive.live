@@ -158,7 +158,11 @@ export default class App extends React.Component<Props, State> {
 							</>
 						)}
 						<br />- With the file open, add '<code>192.168.1.113 hard-drive.live</code>' below the any content
-						<br />- Save the file and refresh the page
+						<br />- Save the file and{" "}
+						<a className="hover:underline text-blue-600" href="http://hard-drive.live">
+							click here
+						</a>
+						. You should be redirected to http://hard-drive.live and be able to view the network hard drive
 					</span>
 				),
 			});
