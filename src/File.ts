@@ -47,6 +47,7 @@ export default class File {
 	public readonly group: number;
 	public readonly size: {
 		b: number;
+		kb: number;
 		mb: number;
 		gb: number;
 	};
@@ -63,8 +64,9 @@ export default class File {
 		this.group = opts.group;
 		this.size = {
 			b: opts.size,
-			mb: opts.size / 1024,
-			gb: opts.size / 1024 / 1024,
+			kb: opts.size / 1024,
+			mb: opts.size / 1024 / 1024,
+			gb: opts.size / 1024 / 1024 / 1024,
 		};
 		this.lastModifiedMs = opts.lastModified;
 		this.lastAccessedMs = opts.lastAccessed;
