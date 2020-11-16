@@ -1,26 +1,28 @@
 import React from "react";
-import Popup from "reactjs-popup";
+import { Popup } from "reactjs-popup";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faEdit } from "@fortawesome/free-regular-svg-icons";
 
 interface State {
-	newDirName: string;
+	newName: string;
 }
 interface Props {
-	createDir(name: string): void;
-	closeUpperPopup(): void;
+	name: string;
+	rename(oldName: string, newName: string): void;
 }
 
-export default class CreateDirPopup extends React.Component<Props, State> {
+export default class RenamePopup extends React.Component<Props, State> {
 	constructor(props: Props | Readonly<Props>) {
 		super(props);
 
 		this.state = {
-			newDirName: "",
+			newName: this.props.name,
 		};
 	}
 
 	private handleInputChange(value: string) {
 		this.setState({
-			newDirName: value.replace(/(\/|\\)/gi, "-"),
+			newName: value.replace(/(\/|\\)/gi, "-"),
 		});
 	}
 
@@ -28,17 +30,17 @@ export default class CreateDirPopup extends React.Component<Props, State> {
 		return (
 			<Popup
 				trigger={
-					<div className="mx-auto text-center hover:shadow hover:bg-gray-400 hover-mouse-pointer p-1">
-						Create Folder
-					</div>
+					<span className="text-right float-right mr-4 text-blue-500 hover:text-blue-700 hover-mouse-pointer">
+						<FontAwesomeIcon icon={faEdit} />
+					</span>
 				}
 				modal
 				position="top center">
 				{(closePopup: any) => (
 					<div className="rounded shadow bg-gray-300 p-2 text-center">
-						<label htmlFor="new-dir-name">Folder Name:</label>
+						<label htmlFor="new-name">New Name:</label>
 						<input
-							value={this.state.newDirName}
+							value={this.state.newName}
 							onChange={(e) => {
 								e.preventDefault();
 								this.handleInputChange(e.target.value);
@@ -49,16 +51,17 @@ export default class CreateDirPopup extends React.Component<Props, State> {
 						<div className="mt-4 mx-auto text-center">
 							<button
 								className={`bg-green-400 mx-2 rounded p-1 ${
-									!this.state.newDirName ? "opacity-50 cursor-not-allowed" : "hover:bg-green-500 hover:shadow"
+									!this.state.newName || this.state.newName === this.props.name
+										? "opacity-50 cursor-not-allowed"
+										: "hover:bg-green-500 hover:shadow"
 								}`}
 								onClick={async (e) => {
 									e.preventDefault();
-									if (!this.state.newDirName) return;
-									this.props.createDir(this.state.newDirName);
-									this.props.closeUpperPopup();
+									if (!this.state.newName || this.state.newName === this.props.name) return;
+									this.props.rename(this.props.name, this.state.newName);
 									closePopup();
 								}}>
-								Create
+								Rename
 							</button>
 							<button className="bg-red-500 hover:bg-red-600 hover:shadow mx-2 rounded p-1" onClick={closePopup}>
 								Cancel

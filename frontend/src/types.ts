@@ -25,3 +25,14 @@ export enum Types {
 	BlockDevice,
 	Socket,
 }
+
+export type SupportedFileIcon =
+	| "word"
+	| "powerpoint"
+	| "pdf"
+	| "archive"
+	| "excel"
+	| "video"
+	| "audio"
+	| "csv"
+	| "image";
