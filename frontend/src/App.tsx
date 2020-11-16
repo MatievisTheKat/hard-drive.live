@@ -64,7 +64,7 @@ export default class App extends React.Component<Props, State> {
 	}
 
 	private rename(oldName: string, newName: string) {
-		Axios.post(`http://hard-drive.live/api/rename`, {
+		Axios.post("http://hard-drive.live/api/rename", {
 			oldPath: `${this.state.cwd}/${oldName}`,
 			newPath: `${this.state.cwd}/${newName}`,
 		})
@@ -75,7 +75,7 @@ export default class App extends React.Component<Props, State> {
 	}
 
 	private remove(path: string) {
-		Axios.post(`http://hard-drive.live/api/remove`, {
+		Axios.post("http://hard-drive.live/api/remove", {
 			path,
 		})
 			.then(async () => {
@@ -85,10 +85,23 @@ export default class App extends React.Component<Props, State> {
 	}
 
 	private createDir(name: string) {
-		Axios.post(`http://hard-drive.live/api/createDir`, {
+		Axios.post("http://hard-drive.live/api/createDir", {
 			path: `${this.state.cwd}/${name}`,
 		})
 			.then(async () => {
+				await this.updatePath();
+			})
+			.catch(this.updateError.bind(this));
+	}
+
+	private createFile(name: string, ext: string, data?: string) {
+		Axios.post("http://hard-drive.live/api/createFile", {
+			dirPath: this.state.cwd || "/",
+			fileName: name,
+			fileExt: ext,
+			data,
+		})
+			.then(async (res) => {
 				await this.updatePath();
 			})
 			.catch(this.updateError.bind(this));
@@ -174,6 +187,7 @@ export default class App extends React.Component<Props, State> {
 			<div className="max-w-4xl mx-auto container">
 				<Header
 					createDir={this.createDir.bind(this)}
+					createFile={this.createFile.bind(this)}
 					uploadFiles={this.uploadFiles.bind(this)}
 					goUpOneDir={this.goUpOneDir.bind(this)}
 					formatPwdForDisplay={this.formatPwdForDisplay.bind(this)}

@@ -15,6 +15,8 @@ export interface FileInfo {
 	readonly createdMs: number;
 }
 
+export const supportedCreateFileTypes = ["txt"];
+
 export enum Types {
 	Unknown,
 	Symlink,

@@ -2,13 +2,16 @@ import { faArrowAltCircleLeft, faPlusSquare } from "@fortawesome/free-regular-sv
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React from "react";
 import Popup from "reactjs-popup";
+
 import CreateDirPopup from "./CreateDirPopup";
 import UploadPopup from "./UploadPopup";
+import CreateFilePopup from "./CreateFilePopup";
 
 interface State {}
 interface Props {
 	cwd: string;
 	createDir(name: string): void;
+	createFile(name: string, ext: string, data?: string): void;
 	uploadFiles(files: FileList): void;
 	goUpOneDir(): void;
 	formatPwdForDisplay(): JSX.Element[];
@@ -41,6 +44,7 @@ export default class Header extends React.Component<Props, State> {
 						nested>
 						{(close: any) => (
 							<div className="shadow bg-gray-300">
+								<CreateFilePopup createFile={this.props.createFile} closeUpperPopup={close} />
 								<UploadPopup uploadFiles={this.props.uploadFiles} closeUpperPopup={close} />
 								<CreateDirPopup createDir={this.props.createDir} closeUpperPopup={close} />
 							</div>

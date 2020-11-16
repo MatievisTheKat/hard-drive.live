@@ -15,9 +15,9 @@ export default class RenamePopup extends React.Component<Props, State> {
 	constructor(props: Props | Readonly<Props>) {
 		super(props);
 
-		this.setState({
-			newName: "",
-		});
+		this.state = {
+			newName: this.props.name,
+		};
 	}
 
 	private handleInputChange(value: string) {
@@ -40,7 +40,7 @@ export default class RenamePopup extends React.Component<Props, State> {
 					<div className="rounded shadow bg-gray-300 p-2 text-center">
 						<label htmlFor="new-name">New Name:</label>
 						<input
-							value={this.state?.newName || this.props.name}
+							value={this.state.newName}
 							onChange={(e) => {
 								e.preventDefault();
 								this.handleInputChange(e.target.value);
@@ -51,13 +51,13 @@ export default class RenamePopup extends React.Component<Props, State> {
 						<div className="mt-4 mx-auto text-center">
 							<button
 								className={`bg-green-400 mx-2 rounded p-1 ${
-									!this.state?.newName || this.state?.newName === this.props.name
+									!this.state.newName || this.state.newName === this.props.name
 										? "opacity-50 cursor-not-allowed"
 										: "hover:bg-green-500 hover:shadow"
 								}`}
 								onClick={async (e) => {
 									e.preventDefault();
-									if (!this.state?.newName || this.state?.newName === this.props.name) return;
+									if (!this.state.newName || this.state.newName === this.props.name) return;
 									this.props.rename(this.props.name, this.state.newName);
 									closePopup();
 								}}>
