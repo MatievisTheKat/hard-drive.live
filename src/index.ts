@@ -4,9 +4,11 @@ import morgan from "morgan";
 import cors from "cors";
 import bodyParser from "body-parser";
 import multer from "multer";
-import { resolve } from "path";
+import { join, resolve } from "path";
 import { Logger } from "./Logger";
 import Client from "./Client";
+import { Types } from "./File";
+import fs from "fs-extra";
 
 dotenv.config({
 	path: resolve(".env"),
@@ -72,7 +74,7 @@ app.post("/api/upload", upload.array("files"), async (req, res) => {
 	const errors: any[] = [];
 
 	for (const file of files) {
-		const result = await client.create(dirPath, file.path, file.originalname, overwrite).catch((err) => {
+		const result = await client.upload(dirPath, file.path, file.originalname, overwrite).catch((err) => {
 			Logger.error(err);
 			errors.push(err.message);
 		});
@@ -100,7 +102,52 @@ app.post("/api/createDir", async (req, res) => {
 
 app.get("/api/download/:basePath?/*", async (req, res) => {
 	const path = client.sanitizePath(getPathFromParams(req));
-	res.download(path);
+	if (!(await Client.exists(path))) return res.status(400).json({ error: "Error: path does not exist" });
+
+	const stat = await Client.stat(path);
+	if (stat.type === Types.Directory) {
+		client.zipDir(path).then((zipped) => {
+			res.download(zipped.path);
+		});
+	} else res.download(path);
+});
+
+app.get("/api/view/:basePath?/*", async (req, res) => {
+	const path = client.sanitizePath(getPathFromParams(req));
+	if (!(await Client.exists(path))) return res.status(400).json({ error: "Error: path does not exist" });
+
+	const stat = await Client.stat(path);
+	if (stat.type === Types.Directory)
+		return res
+			.status(400)
+			.json({ error: "Error: cannot view a directory via this endpoint. Try /api/list/:path" });
+
+	const parent = stat.parent;
+	const pubParent = resolve(`./public/${client.desanitizePath(parent)}`);
+	const pubPath = resolve(`./public/${client.desanitizePath(join(parent, stat.name))}`);
+
+	await fs.ensureDir(pubParent);
+	await fs.copyFile(path, pubPath);
+
+	res.redirect(`/public${client.desanitizePath(path)}`);
+});
+
+app.use("/public", express.static(resolve("./public")));
+
+app.post("/api/createFile", async (req, res) => {
+	const { dirPath, fileName, fileExt, data } = req.body;
+	if (!dirPath || !fileName || !fileExt)
+		return res.status(400).json({ error: "Error: Must provide a dirPath, fileName, and fileExt" });
+	if (await Client.exists(client.sanitizePath(`${dirPath}/${fileName}.${fileExt}`)))
+		return res.status(400).json({ error: "Error: A file with that name and extension already exists" });
+
+	client
+		.create(dirPath, fileName, fileExt, data)
+		.then(() => res.status(200).json({ success: true }))
+		.catch((err) => {
+			Logger.error(err);
+			res.status(500).json(err);
+		});
 });
 
 app.listen(port, () => Logger.log(`Listening on port ${port}`));

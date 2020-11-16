@@ -3,6 +3,7 @@ package-lock.json
 tmp.*
 tmp/
 frontend/build
+public/
 
 # Logs
 logs
