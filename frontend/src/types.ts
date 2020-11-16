@@ -15,8 +15,6 @@ export interface FileInfo {
 	readonly createdMs: number;
 }
 
-export const supportedCreateFileTypes = ["txt"];
-
 export enum Types {
 	Unknown,
 	Symlink,
@@ -27,3 +25,14 @@ export enum Types {
 	BlockDevice,
 	Socket,
 }
+
+export type SupportedFileIcon =
+	| "word"
+	| "powerpoint"
+	| "pdf"
+	| "archive"
+	| "excel"
+	| "video"
+	| "audio"
+	| "csv"
+	| "image";

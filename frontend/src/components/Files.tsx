@@ -1,11 +1,10 @@
-import { faFolder, faFile } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React from "react";
 import { Types, FileInfo } from "../types";
 
 import DeleteButton from "./DeleteButton";
 import DisplayFileInfo from "./DisplayFileInfo";
 import RenamePopup from "./RenamePopup";
+import FileIcon from "./FileIcon";
 
 interface State {}
 interface Props {
@@ -30,7 +29,7 @@ export default class Files extends React.Component<Props, State> {
 										e.preventDefault();
 										await this.props.updatePath(`${this.props.cwd}/${f.name}`);
 									}}>
-									<FontAwesomeIcon icon={faFolder} className="mx-2 text-blue-400" />
+									<FileIcon type={f.type} ext={"directory"} className="mx-2 text-blue-400" />
 									{f.name}
 								</span>
 							) : (
@@ -39,7 +38,7 @@ export default class Files extends React.Component<Props, State> {
 									className="hover-mouse-pointer hover:text-blue-700"
 									href={`http://hard-drive.live/api/download${this.props.cwd}/${f.name}`}
 									download>
-									<FontAwesomeIcon icon={faFile} className="mx-2 text-blue-400" />
+									<FileIcon type={f.type} ext={f.name.split(".").pop() || ""} className="mx-2 text-blue-400" />
 									{f.name}
 								</a>
 							)}

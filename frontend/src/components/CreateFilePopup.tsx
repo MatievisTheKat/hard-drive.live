@@ -1,6 +1,5 @@
 import React from "react";
 import { Popup } from "reactjs-popup";
-import { supportedCreateFileTypes } from "../types";
 
 interface State {
 	name: string;
@@ -19,23 +18,23 @@ export default class CreateFilePopup extends React.Component<Props, State> {
 		this.state = {
 			name: "",
 			content: "",
-			ext: "txt",
+			ext: "",
 		};
 	}
 
-	private handleNameChange(value: string) {
+	private setName(value: string) {
 		this.setState({
 			name: value,
 		});
 	}
 
-	private handleContentChange(value: string) {
+	private setContent(value: string) {
 		this.setState({
 			content: value,
 		});
 	}
 
-	private handleExtChange(value: string) {
+	private setExt(value: string) {
 		this.setState({
 			ext: value,
 		});
@@ -60,25 +59,21 @@ export default class CreateFilePopup extends React.Component<Props, State> {
 								value={this.state.name}
 								onChange={(e) => {
 									e.preventDefault();
-									this.handleNameChange(e.target.value);
+									this.setName(e.target.value);
 								}}
 								className="py-1 px-2 block appearance-none w-full bg-white border border-gray-400 hover:border-gray-500 rounded shadow-sm leading-tight focus:outline-none focus:shadow-outline"
 							/>
 
 							<p className="mt-5">Type:</p>
-							<select
+							<input
+								type="text"
 								value={this.state.ext}
 								onChange={(e) => {
 									e.preventDefault();
-									this.handleExtChange(e.target.value);
+									this.setExt(e.target.value);
 								}}
-								className="py-1 px-2 block appearance-none w-full bg-white border border-gray-400 hover:border-gray-500 rounded shadow-sm leading-tight focus:outline-none focus:shadow-outline hover-mouse-pointer">
-								{supportedCreateFileTypes.map((t, i) => (
-									<option key={i} className="text-center">
-										{t}
-									</option>
-								))}
-							</select>
+								className="py-1 px-2 block appearance-none w-full bg-white border border-gray-400 hover:border-gray-500 rounded shadow-sm leading-tight focus:outline-none focus:shadow-outline"
+							/>
 
 							<p className="mt-5">Content:</p>
 							<textarea
@@ -88,7 +83,7 @@ export default class CreateFilePopup extends React.Component<Props, State> {
 								value={this.state.content}
 								onChange={(e) => {
 									e.preventDefault();
-									this.handleContentChange(e.target.value);
+									this.setContent(e.target.value);
 								}}></textarea>
 						</div>
 
