@@ -104,7 +104,12 @@ app.get("/api/download/:basePath?/*", async (req, res) => {
 	const path = client.sanitizePath(getPathFromParams(req));
 	if (!(await Client.exists(path))) return res.status(400).json({ error: "Error: path does not exist" });
 
-	res.download(path);
+	const stat = await Client.stat(path);
+	if (stat.type === Types.Directory) {
+		client.zipDir(path).then((zipped) => {
+			res.download(zipped.path);
+		});
+	} else res.download(path);
 });
 
 app.get("/api/view/:basePath?/*", async (req, res) => {

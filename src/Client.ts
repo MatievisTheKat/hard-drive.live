@@ -1,5 +1,6 @@
 import fs from "fs-extra";
 import { join } from "path";
+import archiver from "archiver";
 import File, { Types } from "./File";
 
 export default class Client {
@@ -94,28 +95,28 @@ export default class Client {
 	}
 
 	public async ls(path: string = this.storagePath): Promise<File[]> {
-		path = this.sanitizePath(path);
+		if (!path.startsWith(this.storagePath)) path = this.sanitizePath(path);
 		if (path === "/" || path === "") path = this.storagePath;
 		return await Client.readDir(path);
 	}
 
 	public rename(oldPath: string, newPath: string): Promise<void> {
-		oldPath = this.sanitizePath(oldPath);
-		newPath = this.sanitizePath(newPath);
+		if (!oldPath.startsWith(this.storagePath)) oldPath = this.sanitizePath(oldPath);
+		if (!newPath.startsWith(this.storagePath)) newPath = this.sanitizePath(newPath);
 		return new Promise(async (res, rej) => {
 			fs.rename(oldPath, newPath).then(res).catch(rej);
 		});
 	}
 
 	public remove(path: string): Promise<void> {
-		path = this.sanitizePath(path);
+		if (!path.startsWith(this.storagePath)) path = this.sanitizePath(path);
 		return new Promise((res, rej) => {
 			fs.remove(path).then(res).catch(rej);
 		});
 	}
 
 	public upload(dirPath: string, tmpPath: string, name: string, overwrite = false): Promise<boolean | any> {
-		const finalPath = join(this.sanitizePath(dirPath), name);
+		const finalPath = join(!dirPath.startsWith(this.storagePath) ? this.sanitizePath(dirPath) : dirPath, name);
 		return new Promise(async (res, rej) => {
 			fs.move(tmpPath, finalPath, { overwrite })
 				.then(() => res(true))
@@ -124,7 +125,7 @@ export default class Client {
 	}
 
 	public create(path: string, name: string, ext: string, data?: string): Promise<void> {
-		const filePath = join(this.sanitizePath(path), `${name}.${ext}`);
+		const filePath = join(!path.startsWith(this.storagePath) ? this.sanitizePath(path) : path, `${name}.${ext}`);
 		return new Promise((res, rej) => {
 			fs.writeFile(filePath, data || "")
 				.then(res)
@@ -133,9 +134,31 @@ export default class Client {
 	}
 
 	public mkdir(path: string): Promise<void> {
-		path = this.sanitizePath(path);
+		if (!path.startsWith(this.storagePath)) path = this.sanitizePath(path);
 		return new Promise((res, rej) => {
 			fs.mkdir(path).then(res).catch(rej);
+		});
+	}
+
+	public async zipDir(path: string, destPath?: string): Promise<File> {
+		if (!path.startsWith(this.storagePath)) path = this.sanitizePath(path);
+		const stat = await Client.stat(path);
+		if (!destPath) destPath = join(Client.parentFromPath(path), `${stat.name}.zip`);
+
+		return new Promise((res, rej) => {
+			if (stat.type !== Types.Directory) return rej("Selected path is not a directory");
+
+			const archive = archiver("zip");
+			const stream = fs.createWriteStream(destPath as string);
+
+			archive.directory(path, false).on("error", rej).pipe(stream);
+
+			stream.on("close", async () => {
+				const zipped = await Client.stat(destPath as string);
+				res(zipped);
+			});
+
+			archive.finalize();
 		});
 	}
 }
