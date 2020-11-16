@@ -36,6 +36,7 @@ export default class DeleteButton extends React.Component<Props, State> {
 								onClick={(e) => {
 									e.preventDefault();
 									this.props.remove(`${this.props.cwd}/${this.props.file.name}`);
+									close();
 								}}>
 								Yes, do as I say
 							</button>

@@ -1,7 +1,7 @@
 import moment from "moment";
 import React from "react";
 import Popup from "reactjs-popup";
-import { FileInfo } from "../types";
+import { FileInfo as FileInfoType } from "../types";
 
 import Tooltip from "./Tooltip";
 
@@ -12,10 +12,10 @@ interface State {
 	};
 }
 interface Props {
-	file: FileInfo;
+	file: FileInfoType;
 }
 
-export default class DisplayFileInfo extends React.Component<Props, State> {
+export default class FileInfo extends React.Component<Props, State> {
 	public render() {
 		const extractFullFormat = (format: string) =>
 			format === "GB"
