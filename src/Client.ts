@@ -110,11 +110,20 @@ export default class Client {
 		});
 	}
 
-	public create(dirPath: string, tmpPath: string, name: string, overwrite = false): Promise<boolean> {
+	public upload(dirPath: string, tmpPath: string, name: string, overwrite = false): Promise<boolean | any> {
 		const finalPath = join(this.sanitizePath(dirPath), name);
 		return new Promise(async (res, rej) => {
 			fs.move(tmpPath, finalPath, { overwrite })
 				.then(() => res(true))
+				.catch(rej);
+		});
+	}
+
+	public create(path: string, name: string, ext: string, data?: string): Promise<void> {
+		const filePath = join(this.sanitizePath(path), `${name}.${ext}`);
+		return new Promise((res, rej) => {
+			fs.writeFile(filePath, data || "")
+				.then(res)
 				.catch(rej);
 		});
 	}
