@@ -16,9 +16,9 @@ export default class Client {
 	}
 
 	public static parentFromPath(path: string): string {
-		const split = path.split("/");
+		const split = path.split("/").filter((dir) => dir !== "");
 		split.pop();
-		return split.join("/");
+		return `/${split.join("/")}`;
 	}
 
 	public static async stat(path: string): Promise<File> {
@@ -87,6 +87,10 @@ export default class Client {
 
 	public sanitizePath(path: string): string {
 		return join(this.storagePath, path);
+	}
+
+	public desanitizePath(path: string): string {
+		return path.replace(this.storagePath, "");
 	}
 
 	public async ls(path: string = this.storagePath): Promise<File[]> {

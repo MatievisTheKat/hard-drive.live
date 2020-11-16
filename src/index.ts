@@ -4,9 +4,11 @@ import morgan from "morgan";
 import cors from "cors";
 import bodyParser from "body-parser";
 import multer from "multer";
-import { resolve } from "path";
+import { join, resolve } from "path";
 import { Logger } from "./Logger";
 import Client from "./Client";
+import { Types } from "./File";
+import fs from "fs-extra";
 
 dotenv.config({
 	path: resolve(".env"),
@@ -98,10 +100,34 @@ app.post("/api/createDir", async (req, res) => {
 		});
 });
 
-app.get("/api/download/:basePath?/*", (req, res) => {
+app.get("/api/download/:basePath?/*", async (req, res) => {
 	const path = client.sanitizePath(getPathFromParams(req));
+	if (!(await Client.exists(path))) return res.status(400).json({ error: "Error: path does not exist" });
+
 	res.download(path);
 });
+
+app.get("/api/view/:basePath?/*", async (req, res) => {
+	const path = client.sanitizePath(getPathFromParams(req));
+	if (!(await Client.exists(path))) return res.status(400).json({ error: "Error: path does not exist" });
+
+	const stat = await Client.stat(path);
+	if (stat.type === Types.Directory)
+		return res
+			.status(400)
+			.json({ error: "Error: cannot view a directory via this endpoint. Try /api/list/:path" });
+
+	const parent = stat.parent;
+	const pubParent = resolve(`./public/${client.desanitizePath(parent)}`);
+	const pubPath = resolve(`./public/${client.desanitizePath(join(parent, stat.name))}`);
+
+	await fs.ensureDir(pubParent);
+	await fs.copyFile(path, pubPath);
+
+	res.redirect(`/public${client.desanitizePath(path)}`);
+});
+
+app.use("/public", express.static(resolve("./public")));
 
 app.post("/api/createFile", async (req, res) => {
 	const { dirPath, fileName, fileExt, data } = req.body;
