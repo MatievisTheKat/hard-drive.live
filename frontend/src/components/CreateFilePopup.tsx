@@ -23,20 +23,16 @@ export default class CreateFilePopup extends React.Component<Props, State> {
 	}
 
 	private setName(value: string) {
+		const parts = value.split(".");
 		this.setState({
 			name: value,
+			ext: parts.length > 1 ? parts.pop() || "txt" : "txt",
 		});
 	}
 
 	private setContent(value: string) {
 		this.setState({
 			content: value,
-		});
-	}
-
-	private setExt(value: string) {
-		this.setState({
-			ext: value,
 		});
 	}
 
@@ -51,8 +47,8 @@ export default class CreateFilePopup extends React.Component<Props, State> {
 				position="top center"
 				modal>
 				{(closePopup: any) => (
-					<div className="rounded w-screen container shadow bg-gray-300 p-2 text-center w-2xl">
-						<div className="flex-row">
+					<div className="rounded w-screen h-screen container shadow bg-gray-300 p-2 text-center h-2xl w-2xl">
+						<div className="container">
 							<p>Name:</p>
 							<input
 								type="text"
@@ -64,22 +60,11 @@ export default class CreateFilePopup extends React.Component<Props, State> {
 								className="py-1 px-2 block appearance-none w-full bg-white border border-gray-400 hover:border-gray-500 rounded shadow-sm leading-tight focus:outline-none focus:shadow-outline"
 							/>
 
-							<p className="mt-5">Type:</p>
-							<input
-								type="text"
-								value={this.state.ext}
-								onChange={(e) => {
-									e.preventDefault();
-									this.setExt(e.target.value);
-								}}
-								className="py-1 px-2 block appearance-none w-full bg-white border border-gray-400 hover:border-gray-500 rounded shadow-sm leading-tight focus:outline-none focus:shadow-outline"
-							/>
-
 							<p className="mt-5">Content:</p>
 							<textarea
-								className="block appearance-none w-full bg-white border border-gray-400 hover:border-gray-500 rounded shadow-sm leading-tight focus:outline-none focus:shadow-outline"
+								className="block appearance-none w-full h-full bg-white border border-gray-400 hover:border-gray-500 rounded shadow-sm leading-tight focus:outline-none focus:shadow-outline"
 								cols={30}
-								rows={10}
+								rows={20}
 								value={this.state.content}
 								onChange={(e) => {
 									e.preventDefault();
@@ -95,7 +80,11 @@ export default class CreateFilePopup extends React.Component<Props, State> {
 								onClick={async (e) => {
 									e.preventDefault();
 									if (!this.state.name) return;
-									this.props.createFile(this.state.name, this.state.ext, this.state.content);
+
+									const parts = this.state.name.split(".");
+									if (parts.length > 1) parts.pop();
+
+									this.props.createFile(parts.join(""), this.state.ext, this.state.content);
 									this.props.closeUpperPopup();
 									closePopup();
 								}}>

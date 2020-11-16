@@ -45,7 +45,7 @@ export default class Files extends React.Component<Props, State> {
 								</a>
 							)}
 
-							<DeleteButton remove={this.props.remove} cwd={this.props.cwd} file={f} />
+							<DeleteButton remove={this.props.remove} cwd={this.props.cwd} fileName={f.name} />
 							<RenamePopup rename={this.props.rename} name={f.name} />
 							<DownloadButton path={`${this.props.cwd}/${f.name}`} />
 							<FileInfo file={f} />
