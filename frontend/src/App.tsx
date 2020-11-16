@@ -27,7 +27,7 @@ export default class App extends React.Component<Props, State> {
 		};
 	}
 
-	private async updatePath(path: string = this.state.cwd) {
+	private async update(path: string = this.state.cwd) {
 		await Axios.get(`http://hard-drive.live/api/list/${path}`)
 			.then((res) => {
 				this.setState({
@@ -44,7 +44,7 @@ export default class App extends React.Component<Props, State> {
 		if (dirs.length < 2) return;
 		else {
 			dirs.pop();
-			await this.updatePath(dirs.join("/"));
+			await this.update(dirs.join("/"));
 		}
 	}
 
@@ -56,7 +56,7 @@ export default class App extends React.Component<Props, State> {
 				className="hover:underline hover:text-gray-600 hover-mouse-pointer"
 				onClick={async (e) => {
 					e.preventDefault();
-					await this.updatePath(`${dirs.slice(0, dirs.indexOf(dir) + 1).join("/")}`);
+					await this.update(`${dirs.slice(0, dirs.indexOf(dir) + 1).join("/")}`);
 				}}>
 				{`${dir}/`}
 			</span>
@@ -69,7 +69,7 @@ export default class App extends React.Component<Props, State> {
 			newPath: `${this.state.cwd}/${newName}`,
 		})
 			.then(async (res) => {
-				await this.updatePath();
+				await this.update();
 			})
 			.catch(this.updateError.bind(this));
 	}
@@ -79,7 +79,7 @@ export default class App extends React.Component<Props, State> {
 			path,
 		})
 			.then(async () => {
-				await this.updatePath();
+				await this.update();
 			})
 			.catch(this.updateError.bind(this));
 	}
@@ -89,7 +89,7 @@ export default class App extends React.Component<Props, State> {
 			path: `${this.state.cwd}/${name}`,
 		})
 			.then(async () => {
-				await this.updatePath();
+				await this.update();
 			})
 			.catch(this.updateError.bind(this));
 	}
@@ -102,7 +102,7 @@ export default class App extends React.Component<Props, State> {
 			data,
 		})
 			.then(async (res) => {
-				await this.updatePath();
+				await this.update();
 			})
 			.catch(this.updateError.bind(this));
 	}
@@ -116,7 +116,7 @@ export default class App extends React.Component<Props, State> {
 
 			Axios.post("http://hard-drive.live/api/upload", form)
 				.then(async () => {
-					await this.updatePath();
+					await this.update();
 				})
 				.catch(this.updateError.bind(this));
 		}
@@ -135,7 +135,7 @@ export default class App extends React.Component<Props, State> {
 	}
 
 	public async componentDidMount() {
-		if (correctDomain) await this.updatePath();
+		if (correctDomain) await this.update();
 		else
 			this.setState({
 				error: (
@@ -186,6 +186,7 @@ export default class App extends React.Component<Props, State> {
 		return (
 			<div className="max-w-4xl mx-auto container">
 				<Header
+					update={this.update.bind(this)}
 					createDir={this.createDir.bind(this)}
 					createFile={this.createFile.bind(this)}
 					uploadFiles={this.uploadFiles.bind(this)}
@@ -199,7 +200,7 @@ export default class App extends React.Component<Props, State> {
 				<Files
 					rename={this.rename.bind(this)}
 					remove={this.remove.bind(this)}
-					updatePath={this.updatePath.bind(this)}
+					updatePath={this.update.bind(this)}
 					files={this.state.files}
 					cwd={this.state.cwd}
 				/>

@@ -1,4 +1,5 @@
 import { faArrowAltCircleLeft, faPlusSquare } from "@fortawesome/free-regular-svg-icons";
+import { faRedo } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React from "react";
 import Popup from "reactjs-popup";
@@ -15,6 +16,7 @@ interface Props {
 	uploadFiles(files: FileList): void;
 	goUpOneDir(): void;
 	formatPwdForDisplay(): JSX.Element[];
+	update(path?: string): Promise<void>;
 }
 
 export default class Header extends React.Component<Props, State> {
@@ -50,6 +52,14 @@ export default class Header extends React.Component<Props, State> {
 							</div>
 						)}
 					</Popup>
+					<span
+						className="float-right text-blue-500 mx-2 hover-mouse-pointer"
+						onClick={async (e) => {
+							e.preventDefault();
+							await this.props.update();
+						}}>
+						<FontAwesomeIcon icon={faRedo} />
+					</span>
 				</h4>
 			</div>
 		);
