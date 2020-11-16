@@ -36,7 +36,7 @@ app.get("/api/list/:basePath?/*", (req, res) => {
 
 app.post("/api/rename", async (req, res) => {
 	const { oldPath, newPath } = req.body;
-	if (!(await Client.exists(client.sanitizePath(oldPath))))
+	if (!oldPath || !newPath || !(await Client.exists(client.sanitizePath(oldPath))))
 		return res.status(400).json({ error: "Error: cannot rename a file that does not exist" });
 
 	client
@@ -50,7 +50,7 @@ app.post("/api/rename", async (req, res) => {
 
 app.post("/api/remove", async (req, res) => {
 	const { path } = req.body;
-	if (!(await Client.exists(client.sanitizePath(path))))
+	if (!path || !(await Client.exists(client.sanitizePath(path))))
 		return res.status(400).json({ error: "Error: failed to remove file since it does not exist" });
 
 	client
@@ -65,7 +65,6 @@ app.post("/api/remove", async (req, res) => {
 app.post("/api/upload", upload.array("files"), async (req, res) => {
 	const files = req.files as Express.Multer.File[];
 	const { dirPath, overwrite } = req.body;
-	console.log(dirPath);
 	if (!dirPath || !(await Client.exists(client.sanitizePath(dirPath))))
 		return res.status(400).json({ error: "Error: Invalid directory to upload to" });
 
@@ -86,6 +85,7 @@ app.post("/api/upload", upload.array("files"), async (req, res) => {
 
 app.post("/api/createDir", async (req, res) => {
 	const { path } = req.body;
+	if (!path) return res.status(400).json({ error: "Error: No path provided" });
 	if (await Client.exists(client.sanitizePath(path)))
 		return res.status(400).json({ error: "Error: A folder with that name already exists" });
 
