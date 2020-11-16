@@ -14,7 +14,7 @@ interface State {
 interface Props {}
 
 const domain = window.location.hostname;
-const correctDomain = domain === "hard-drive.live";
+const correctDomain = domain === "hard-drive.live" || domain === "localhost";
 
 export default class App extends React.Component<Props, State> {
 	constructor(props: Props | Readonly<Props>) {
@@ -35,11 +35,7 @@ export default class App extends React.Component<Props, State> {
 					cwd: path,
 				});
 			})
-			.catch((err) => {
-				this.setState({
-					error: err?.response?.data?.error || err.toString(),
-				});
-			});
+			.catch(this.updateError.bind(this));
 	}
 
 	private async goUpOneDir() {
@@ -67,6 +63,17 @@ export default class App extends React.Component<Props, State> {
 		));
 	}
 
+	private rename(oldName: string, newName: string) {
+		Axios.post(`http://hard-drive.live/api/rename`, {
+			oldPath: `${this.state.cwd}/${oldName}`,
+			newPath: `${this.state.cwd}/${newName}`,
+		})
+			.then(async (res) => {
+				await this.updatePath();
+			})
+			.catch(this.updateError.bind(this));
+	}
+
 	private remove(path: string) {
 		Axios.post(`http://hard-drive.live/api/remove`, {
 			path,
@@ -74,11 +81,7 @@ export default class App extends React.Component<Props, State> {
 			.then(async () => {
 				await this.updatePath();
 			})
-			.catch((err) => {
-				this.setState({
-					error: err?.response?.data?.error || err.toString(),
-				});
-			});
+			.catch(this.updateError.bind(this));
 	}
 
 	private createDir(name: string) {
@@ -88,11 +91,7 @@ export default class App extends React.Component<Props, State> {
 			.then(async () => {
 				await this.updatePath();
 			})
-			.catch((err) => {
-				this.setState({
-					error: err?.response?.data?.error || err.toString(),
-				});
-			});
+			.catch(this.updateError.bind(this));
 	}
 
 	private uploadFiles(files: FileList): void {
@@ -106,12 +105,14 @@ export default class App extends React.Component<Props, State> {
 				.then(async () => {
 					await this.updatePath();
 				})
-				.catch((err) => {
-					this.setState({
-						error: err?.response?.data?.error || err.toString(),
-					});
-				});
+				.catch(this.updateError.bind(this));
 		}
+	}
+
+	private updateError(err: any) {
+		this.setState({
+			error: err?.response?.data?.error || err.toString(),
+		});
 	}
 
 	private removeError() {
@@ -182,6 +183,7 @@ export default class App extends React.Component<Props, State> {
 				{this.state.error ? <Error remove={this.removeError.bind(this)}>{this.state.error}</Error> : null}
 
 				<Files
+					rename={this.rename.bind(this)}
 					remove={this.remove.bind(this)}
 					updatePath={this.updatePath.bind(this)}
 					files={this.state.files}
