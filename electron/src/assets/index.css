@@ -1,0 +1,7 @@
+.hover-mouse-pointer:hover {
+	cursor: pointer;
+}
+
+.hover-mouse-help:hover {
+	cursor: help;
+}

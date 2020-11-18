@@ -8,12 +8,13 @@ function createWindow() {
 		width: 800,
 		height: 600,
 		webPreferences: {
-			preload: path.join(__dirname, "preload.out.js"),
-			contextIsolation: true
+			preload: path.join(__dirname, "preload.js"),
+			contextIsolation: true,
 		},
 	});
 
 	if (process.env.DEV) {
+		console.log("Development mode actived. Loading url http://localhost:3000");
 		mainWindow.loadURL("http://localhost:3000");
 	} else {
 		mainWindow.loadFile(path.join(__dirname, "src/build/index.html"));
@@ -28,6 +29,8 @@ function createWindow() {
 // Some APIs can only be used after this event occurs.
 app.whenReady().then(() => {
 	createWindow();
+
+	console.log("Ready");
 
 	app.on("activate", function () {
 		// On macOS it's common to re-create a window in the app when the
