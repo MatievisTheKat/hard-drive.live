@@ -3,7 +3,9 @@ package-lock.json
 tmp.*
 tmp/
 frontend/build
-public/
+./public/
+tailwind.out.css
+react-app-env.d.ts
 
 # Logs
 logs

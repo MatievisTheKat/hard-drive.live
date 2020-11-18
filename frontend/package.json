@@ -22,7 +22,7 @@
 		"web-vitals": "^0.2.4"
 	},
 	"scripts": {
-		"build:css": "tailwind build src/tailwind.css -o src/tailwind.output.css",
+		"build:css": "tailwind build src/assets/tailwind.css -o src/assets/tailwind.out.css",
 		"start": "npm-run-all build:css --parallel start:react",
 		"start:react": "react-scripts start",
 		"prebuild": "run-s build:css",
