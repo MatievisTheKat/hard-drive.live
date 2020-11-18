@@ -5,6 +5,8 @@ export interface FileInfo {
 	readonly type: number;
 	readonly user: number;
 	readonly group: number;
+	readonly username: string;
+	readonly groupname: string;
 	readonly size: {
 		b: number;
 		mb: number;

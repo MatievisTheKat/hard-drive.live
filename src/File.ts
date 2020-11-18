@@ -1,4 +1,5 @@
 import fs from "fs-extra";
+import { groupname, username } from "userid";
 import Client from "./Client";
 
 export interface FileInfo {
@@ -45,6 +46,8 @@ export default class File {
 	public readonly type: number;
 	public readonly user: number;
 	public readonly group: number;
+	public readonly username: string;
+	public readonly groupname: string;
 	public readonly size: {
 		b: number;
 		kb: number;
@@ -71,6 +74,8 @@ export default class File {
 		this.lastModifiedMs = opts.lastModified;
 		this.lastAccessedMs = opts.lastAccessed;
 		this.createdMs = opts.created;
+		this.username = username(this.user);
+		this.groupname = groupname(this.group);
 	}
 
 	public async read(): Promise<File[] | Buffer> {
