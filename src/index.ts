@@ -102,7 +102,8 @@ app.post("/api/createDir", async (req, res) => {
 
 app.get("/api/zip/:basePath?/*", async (req, res) => {
 	const path = client.sanitizePath(getPathFromParams(req));
-	if (!(await Client.exists(path))) return res.status(400).json({ error: "Error: Path does not exist" });
+	if (!(await Client.exists(path)) || path === "/")
+		return res.status(400).json({ error: "Error: Path does not exist" });
 
 	const stat = await Client.stat(path);
 	if (stat.type !== Types.Directory)

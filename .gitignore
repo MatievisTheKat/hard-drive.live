@@ -3,7 +3,7 @@ package-lock.json
 tmp.*
 tmp/
 frontend/build
-./public/
+public
 react-app-env.d.ts
 *.out.*
 electron/main.js

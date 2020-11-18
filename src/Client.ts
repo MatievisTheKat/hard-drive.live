@@ -86,8 +86,14 @@ export default class Client {
 		return await fs.pathExists(path);
 	}
 
+	public static cleanPathEnd(path: string): string {
+		return path.endsWith("/") ? path.slice(0, path.length - 1) : path;
+	}
+
 	public sanitizePath(path: string): string {
-		return join(this.storagePath, path);
+		return path.startsWith(this.storagePath)
+			? Client.cleanPathEnd(path)
+			: join(this.storagePath, Client.cleanPathEnd(path));
 	}
 
 	public desanitizePath(path: string): string {
@@ -143,6 +149,7 @@ export default class Client {
 	public async zipDir(path: string, destPath?: string): Promise<File> {
 		if (!path.startsWith(this.storagePath)) path = this.sanitizePath(path);
 		const stat = await Client.stat(path);
+		console.log(stat);
 		if (!destPath) destPath = join(Client.parentFromPath(path), `${stat.name}.zip`);
 
 		return new Promise((res, rej) => {
