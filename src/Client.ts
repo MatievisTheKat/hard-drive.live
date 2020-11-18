@@ -149,7 +149,6 @@ export default class Client {
 	public async zipDir(path: string, destPath?: string): Promise<File> {
 		if (!path.startsWith(this.storagePath)) path = this.sanitizePath(path);
 		const stat = await Client.stat(path);
-		console.log(stat);
 		if (!destPath) destPath = join(Client.parentFromPath(path), `${stat.name}.zip`);
 
 		return new Promise((res, rej) => {
