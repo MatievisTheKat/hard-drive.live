@@ -1,0 +1,44 @@
+{
+	"name": "auto-backups",
+	"version": "1.0.0",
+	"description": "",
+	"main": "main.js",
+	"scripts": {
+		"dev": "DEV=true npm run electron",
+		"start": "npm run build:react && npm run build:css && npm run electron",
+		"electron": "npm run build:ts && electron .",
+		"react": "npm run build:css && BROWSER=none react-scripts start",
+		"build:ts": "tsc main.ts preload.ts",
+		"build:react": "react-scripts build",
+		"build:css": "tailwind build src/assets/tailwind.css -o src/assets/tailwind.out.css"
+	},
+	"keywords": [],
+	"author": "",
+	"license": "ISC",
+	"devDependencies": {
+		"@types/node": "^12.19.4",
+		"@types/react": "^16.9.56",
+		"@types/react-dom": "^16.9.9",
+		"autoprefixer": "^10.0.2",
+		"concurrently": "^5.3.0",
+		"electron": "^11.0.0",
+		"tailwindcss": "^1.9.6"
+	},
+	"dependencies": {
+		"react": "^17.0.1",
+		"react-dom": "^17.0.1",
+		"react-scripts": "^4.0.0"
+	},
+	"browserslist": {
+		"production": [
+			">0.2%",
+			"not dead",
+			"not op_mini all"
+		],
+		"development": [
+			"last 1 chrome version",
+			"last 1 firefox version",
+			"last 1 safari version"
+		]
+	}
+}
