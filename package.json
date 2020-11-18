@@ -4,7 +4,8 @@
   "description": "",
   "main": "dist/index.js",
   "scripts": {
-    "start": "tsc && node dist/index.js"
+    "start": "tsc && node dist/index.js",
+    "deploy": "tsc && node dist/scripts/deploy.js ./frontend/build /var/www/hard-drive.live/html"
   },
   "repository": {
     "type": "git",
