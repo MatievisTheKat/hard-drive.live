@@ -35,8 +35,9 @@ export default class CreateDirPopup extends React.Component<Props, State> {
 				modal
 				position="top center">
 				{(closePopup: any) => (
-					<div className="rounded shadow bg-gray-300 p-2 text-center">
+					<div className="rounded shadow-lg container w-screen bg-gray-300 p-2 text-center">
 						<label htmlFor="new-dir-name">Folder Name:</label>
+						<br />
 						<input
 							value={this.state.newDirName}
 							onChange={(e) => {
@@ -60,7 +61,13 @@ export default class CreateDirPopup extends React.Component<Props, State> {
 								}}>
 								Create
 							</button>
-							<button className="bg-red-500 hover:bg-red-600 hover:shadow mx-2 rounded p-1" onClick={closePopup}>
+							<button
+								className="bg-red-500 hover:bg-red-600 hover:shadow mx-2 rounded p-1"
+								onClick={(e) => {
+									e.preventDefault();
+									closePopup();
+									this.props.closeUpperPopup();
+								}}>
 								Cancel
 							</button>
 						</div>

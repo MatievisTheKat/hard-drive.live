@@ -189,10 +189,11 @@ export default class App extends React.Component<Props, State> {
 					uploadFiles={this.uploadFiles.bind(this)}
 					goUpOneDir={this.goUpOneDir.bind(this)}
 					formatPwdForDisplay={this.formatPwdForDisplay.bind(this)}
+					loading={this.state.loading}
 					cwd={this.state.cwd}
 				/>
 
-				{this.state.error ? <Error remove={this.removeError.bind(this)}>{this.state.error}</Error> : null}
+				{this.state.error && <Error remove={this.removeError.bind(this)}>{this.state.error}</Error>}
 
 				<Files
 					rename={this.rename.bind(this)}

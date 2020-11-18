@@ -47,7 +47,7 @@ export default class CreateFilePopup extends React.Component<Props, State> {
 				position="top center"
 				modal>
 				{(closePopup: any) => (
-					<div className="pt-10 rounded w-screen h-screen container shadow bg-gray-300 p-2 text-center h-2xl w-2xl">
+					<div className="pt-10 rounded w-screen container shadow-lg bg-gray-300 p-2 text-center w-2xl">
 						<div className="container">
 							<p>Name:</p>
 							<input
@@ -62,7 +62,7 @@ export default class CreateFilePopup extends React.Component<Props, State> {
 
 							<p className="mt-5">Content:</p>
 							<textarea
-								className="block appearance-none w-full h-full bg-white border border-gray-400 hover:border-gray-500 rounded shadow-sm leading-tight focus:outline-none focus:shadow-outline"
+								className="block appearance-none w-9/12 mx-auto h-full bg-white border border-gray-400 hover:border-gray-500 rounded shadow-sm leading-tight focus:outline-none focus:shadow-outline"
 								cols={30}
 								rows={20}
 								value={this.state.content}
@@ -90,7 +90,13 @@ export default class CreateFilePopup extends React.Component<Props, State> {
 								}}>
 								Create
 							</button>
-							<button className="bg-red-500 hover:bg-red-600 hover:shadow mx-2 rounded p-1" onClick={closePopup}>
+							<button
+								className="bg-red-500 hover:bg-red-600 hover:shadow mx-2 rounded p-1"
+								onClick={(e) => {
+									e.preventDefault();
+									closePopup();
+									this.props.closeUpperPopup();
+								}}>
 								Cancel
 							</button>
 						</div>
