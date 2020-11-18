@@ -47,7 +47,7 @@ export default class CreateFilePopup extends React.Component<Props, State> {
 				position="top center"
 				modal>
 				{(closePopup: any) => (
-					<div className="rounded w-screen h-screen container shadow bg-gray-300 p-2 text-center h-2xl w-2xl">
+					<div className="pt-10 rounded w-screen h-screen container shadow bg-gray-300 p-2 text-center h-2xl w-2xl">
 						<div className="container">
 							<p>Name:</p>
 							<input
@@ -57,7 +57,7 @@ export default class CreateFilePopup extends React.Component<Props, State> {
 									e.preventDefault();
 									this.setName(e.target.value);
 								}}
-								className="py-1 px-2 block appearance-none w-full bg-white border border-gray-400 hover:border-gray-500 rounded shadow-sm leading-tight focus:outline-none focus:shadow-outline"
+								className="py-1 px-2 mx-auto block appearance-none w-1/2 bg-white border border-gray-400 hover:border-gray-500 rounded shadow-sm leading-tight focus:outline-none focus:shadow-outline"
 							/>
 
 							<p className="mt-5">Content:</p>
