@@ -5,11 +5,13 @@ import { FileInfo } from "./types";
 import Files from "./components/Files";
 import Header from "./components/Header";
 import Error from "./components/Error";
+import DomainError from "./components/DomainError";
 
 interface State {
 	error?: any;
 	files: FileInfo[];
 	cwd: string;
+	loading: boolean;
 }
 interface Props {}
 
@@ -24,25 +26,40 @@ export default class App extends React.Component<Props, State> {
 			error: undefined,
 			files: [],
 			cwd: "",
+			loading: false,
 		};
 	}
 
+	private set loading(loading: boolean) {
+		this.setState({
+			loading,
+		});
+	}
+
 	private async update(path: string = this.state.cwd) {
+		this.loading = true;
 		await Axios.get(`http://hard-drive.live/api/list/${path}`)
 			.then((res) => {
+				this.loading = false;
 				this.setState({
 					files: res.data,
 					cwd: path,
 				});
 			})
-			.catch(this.updateError.bind(this));
+			.catch((err) => {
+				this.updateError(err);
+				this.loading = false;
+			});
 	}
 
 	private async goUpOneDir() {
+		this.loading = true;
 		const dirs = this.state.cwd.split("/").map((part) => (part === "" ? undefined : part));
 
-		if (dirs.length < 2) return;
-		else {
+		if (dirs.length < 2) {
+			this.loading = false;
+			return;
+		} else {
 			dirs.pop();
 			await this.update(dirs.join("/"));
 		}
@@ -64,50 +81,67 @@ export default class App extends React.Component<Props, State> {
 	}
 
 	private rename(oldName: string, newName: string) {
+		this.loading = true;
 		Axios.post("http://hard-drive.live/api/rename", {
 			oldPath: `${this.state.cwd}/${oldName}`,
 			newPath: `${this.state.cwd}/${newName}`,
 		})
-			.then(async (res) => {
+			.then(async () => {
 				await this.update();
 			})
-			.catch(this.updateError.bind(this));
+			.catch((err) => {
+				this.updateError(err);
+				this.loading = false;
+			});
 	}
 
 	private remove(path: string) {
+		this.loading = true;
 		Axios.post("http://hard-drive.live/api/remove", {
 			path,
 		})
 			.then(async () => {
 				await this.update();
 			})
-			.catch(this.updateError.bind(this));
+			.catch((err) => {
+				this.updateError(err);
+				this.loading = false;
+			});
 	}
 
 	private createDir(name: string) {
+		this.loading = true;
 		Axios.post("http://hard-drive.live/api/createDir", {
 			path: `${this.state.cwd}/${name}`,
 		})
 			.then(async () => {
 				await this.update();
 			})
-			.catch(this.updateError.bind(this));
+			.catch((err) => {
+				this.updateError(err);
+				this.loading = false;
+			});
 	}
 
 	private createFile(name: string, ext: string, data?: string) {
+		this.loading = true;
 		Axios.post("http://hard-drive.live/api/createFile", {
 			dirPath: this.state.cwd || "/",
 			fileName: name,
 			fileExt: ext,
 			data,
 		})
-			.then(async (res) => {
+			.then(async () => {
 				await this.update();
 			})
-			.catch(this.updateError.bind(this));
+			.catch((err) => {
+				this.updateError(err);
+				this.loading = false;
+			});
 	}
 
 	private uploadFiles(files: FileList): void {
+		this.loading = true;
 		for (const file of files) {
 			const form = new FormData();
 
@@ -118,7 +152,10 @@ export default class App extends React.Component<Props, State> {
 				.then(async () => {
 					await this.update();
 				})
-				.catch(this.updateError.bind(this));
+				.catch((err) => {
+					this.updateError(err);
+					this.loading = false;
+				});
 		}
 	}
 
@@ -138,47 +175,7 @@ export default class App extends React.Component<Props, State> {
 		if (correctDomain) await this.update();
 		else
 			this.setState({
-				error: (
-					<span>
-						Incorrect domain. In order for this to work properly you will need to update your 'hosts' file.
-						<div className="mt-1" />
-						<br />
-						{window.navigator.platform === "Win32" ? (
-							<>
-								- Open Notepad as Administrator
-								<br />- Select '<code>File</code>' then '<code>Open</code>'
-								<br />- Navigate to '<code>C:\Windows\System32\drivers\etc\</code>' and select the '
-								<code>hosts</code>' file
-							</>
-						) : window.navigator.platform.toLowerCase().includes("linux") ? (
-							<>
-								- Open '<code>/etc/hosts</code>' in sudo mode
-							</>
-						) : window.navigator.platform.toLowerCase().includes("mac") ? (
-							<>
-								- Open '<code>/private/etc/hosts</code>' in sudo mode
-							</>
-						) : (
-							<>
-								- Open{" "}
-								<a
-									className="hover:underline text-blue-600"
-									href="https://www.google.com/search?q=where+is+my+hosts+file&oq=where+is+my+hosts+file&aqs=chrome..69i57j0l5.4430j0j9&sourceid=chrome&ie=UTF-8"
-									target="_blank"
-									rel="noreferrer">
-									your operating system's '<code>hosts</code>'
-								</a>{" "}
-								file
-							</>
-						)}
-						<br />- With the file open, add '<code>192.168.1.113 hard-drive.live</code>' below the any content
-						<br />- Save the file and{" "}
-						<a className="hover:underline text-blue-600" href="http://hard-drive.live">
-							click here
-						</a>
-						. You should be redirected to http://hard-drive.live and be able to view the network hard drive
-					</span>
-				),
+				error: <DomainError />,
 			});
 	}
 
