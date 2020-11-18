@@ -4,8 +4,8 @@ tmp.*
 tmp/
 frontend/build
 ./public/
-tailwind.out.css
 react-app-env.d.ts
+*.out.*
 
 # Logs
 logs
