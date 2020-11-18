@@ -66,7 +66,7 @@ export default class Header extends React.Component<Props, State> {
 					</h4>
 				</div>
 
-				{this.props.loading && <LinearProgress className="-mb-1 shadow-lg" />}
+				{this.props.loading && <LinearProgress className="-mb-1 shadow-lg container mx-auto" />}
 			</>
 		);
 	}
