@@ -1,7 +1,7 @@
 import moment from "moment";
 import React from "react";
 import Popup from "reactjs-popup";
-import { FileInfo as FileInfoType } from "../types";
+import { FileInfo as FileInfoType, Types } from "../types";
 
 import Tooltip from "./Tooltip";
 
@@ -16,6 +16,12 @@ interface Props {
 }
 
 export default class FileInfo extends React.Component<Props, State> {
+	public toProperCase(str: string) {
+		return str
+			.split(/ +/g)
+			.map((word) => word[0].toUpperCase() + word.slice(1, word.length).toLowerCase())
+			.join(" ");
+	}
 	public render() {
 		const extractFullFormat = (format: string) =>
 			format === "GB"
@@ -56,6 +62,12 @@ export default class FileInfo extends React.Component<Props, State> {
 							}
 							position="top center">
 							<Tooltip>Last modified</Tooltip>
+						</Popup>
+
+						<Popup
+							trigger={<td className="border px-2 py-1 hover-mouse-help">{this.toProperCase(file.username)}</td>}
+							position="top center">
+							<Tooltip>User that owns this {file.type === Types.Directory ? "folder" : "file"}</Tooltip>
 						</Popup>
 					</tr>
 				</tbody>
