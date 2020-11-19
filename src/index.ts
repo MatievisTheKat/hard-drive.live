@@ -149,10 +149,10 @@ app.get("/api/view/:basePath?/*", async (req, res) => {
 app.use("/public", express.static(resolve("./public")));
 
 app.post("/api/createFile", async (req, res) => {
-	const { dirPath, fileName, fileExt, data } = req.body;
+	const { dirPath, fileName, fileExt, data, overwrite } = req.body;
 	if (!dirPath || !fileName || !fileExt)
 		return res.status(400).json({ error: "Error: Must provide a dirPath, fileName, and fileExt" });
-	if (await Client.exists(client.sanitizePath(`${dirPath}/${fileName}.${fileExt}`)))
+	if (!overwrite && await Client.exists(client.sanitizePath(`${dirPath}/${fileName}.${fileExt}`)))
 		return res.status(400).json({ error: "Error: A file with that name and extension already exists" });
 
 	client
