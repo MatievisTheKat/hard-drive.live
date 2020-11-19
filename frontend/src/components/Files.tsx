@@ -6,6 +6,7 @@ import FileInfo from "./FileInfo";
 import RenamePopup from "./RenamePopup";
 import FileIcon from "./FileIcon";
 import DownloadButton from "./DownloadButton";
+import EditPopup from "./EditPopup";
 
 interface State {}
 interface Props {
@@ -14,6 +15,8 @@ interface Props {
 	updatePath(path?: string): Promise<void>;
 	remove(path: string): void;
 	rename(oldName: string, newName: string): void;
+	updateFile(name: string, etx: string, content: string): void;
+	handleError(err: any): void;
 }
 
 export default class Files extends React.Component<Props, State> {
@@ -46,6 +49,14 @@ export default class Files extends React.Component<Props, State> {
 							)}
 
 							<DeleteButton remove={this.props.remove} cwd={this.props.cwd} fileName={f.name} />
+							{f.type === Types.File && (
+								<EditPopup
+									name={f.name}
+									path={f.path}
+									updateFile={this.props.updateFile}
+									handleError={this.props.handleError}
+								/>
+							)}
 							<RenamePopup rename={this.props.rename} name={f.name} />
 							<DownloadButton path={`${this.props.cwd}/${f.name}`} />
 							<FileInfo file={f} />

@@ -1,7 +1,7 @@
 import React from "react";
 import { Popup } from "reactjs-popup";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faEdit } from "@fortawesome/free-regular-svg-icons";
+import { faPencilAlt } from "@fortawesome/free-solid-svg-icons";
 
 interface State {
 	newName: string;
@@ -31,7 +31,7 @@ export default class RenamePopup extends React.Component<Props, State> {
 			<Popup
 				trigger={
 					<span className="text-right float-right mr-4 text-blue-500 hover:text-blue-700 hover-mouse-pointer">
-						<FontAwesomeIcon icon={faEdit} />
+						<FontAwesomeIcon icon={faPencilAlt} />
 					</span>
 				}
 				modal

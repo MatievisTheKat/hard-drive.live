@@ -140,6 +140,24 @@ export default class App extends React.Component<Props, State> {
 			});
 	}
 
+	private updateFile(name: string, ext: string, content: string) {
+		this.loading = true;
+		Axios.post("http://hard-drive.live/api/createFile", {
+			dirPath: this.state.cwd || "/",
+			fileName: name,
+			fileExt: ext,
+			data: content,
+			overwrite: true,
+		})
+			.then(async () => {
+				await this.update();
+			})
+			.catch((err) => {
+				this.updateError(err);
+				this.loading = false;
+			});
+	}
+
 	private uploadFiles(files: FileList): void {
 		this.loading = true;
 		for (const file of files) {
@@ -199,6 +217,8 @@ export default class App extends React.Component<Props, State> {
 					rename={this.rename.bind(this)}
 					remove={this.remove.bind(this)}
 					updatePath={this.update.bind(this)}
+					updateFile={this.updateFile.bind(this)}
+					handleError={this.updateError.bind(this)}
 					files={this.state.files}
 					cwd={this.state.cwd}
 				/>
