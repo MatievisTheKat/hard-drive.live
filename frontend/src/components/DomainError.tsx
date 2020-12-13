@@ -38,7 +38,7 @@ export default class DomainError extends React.Component<Props, State> {
 						file
 					</>
 				)}
-				<br />- With the file open, add '<code>192.168.1.113 hard-drive.live</code>' below the any content
+				<br />- With the file open, add '<code>{window.location.hostname} hard-drive.live</code>' below the any content
 				<br />- Save the file and{" "}
 				<a className="hover:underline text-blue-600" href="http://hard-drive.live">
 					click here
